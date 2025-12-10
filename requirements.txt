@@ -1,0 +1,6 @@
+fastapi==0.124.2
+itemadapter==0.4.0
+psycopg==3.2.13
+pyquery==1.4.3
+python-dotenv==1.2.1
+scrapy==2.13.4
