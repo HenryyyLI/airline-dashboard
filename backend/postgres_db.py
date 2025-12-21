@@ -1,6 +1,7 @@
 from dotenv import load_dotenv, find_dotenv
 import os
 import psycopg
+import json
 
 load_dotenv(find_dotenv())
 POSTGRES_DSN = os.getenv("POSTGRES_DSN")
@@ -584,6 +585,76 @@ class PostgresClient:
             print(f"Error getting reviews: {e}")
             return []
 
+    def insert_sentiment(self, text, submit_time, sent_lab, pos_dict, neg_dict):
+        try:
+            self.cur.execute(
+                """
+                INSERT INTO sentiment (
+                    text, submit_time, sent_lab, pos_dict, neg_dict
+                ) VALUES (
+                    %s, %s, %s, %s::jsonb, %s::jsonb
+                );
+                """, (text, submit_time, sent_lab, json.dumps(pos_dict), json.dumps(neg_dict))
+            )
+            
+            self.conn.commit()
+            
+        except Exception as e:
+            print(f"Error inserting sentiment: {e}")
+            self.conn.rollback()
+
+    def get_random_reviews(self, airline_name, limit=10):
+        try:
+            self.cur.execute(
+                """
+                SELECT content
+                FROM reviews
+                WHERE LOWER(airlineName) = LOWER(%s) AND content IS NOT NULL
+                ORDER BY RANDOM()
+                LIMIT %s;
+                """,
+                (airline_name, limit)
+            )
+            results = self.cur.fetchall()
+            return [{'content': row[0]} for row in results]
+        except Exception as e:
+            print(f"Error getting random reviews: {e}")
+            return []
+
+    def get_reviews_for_regression(self, airline_name):
+        try:
+            self.cur.execute(
+                """
+                SELECT score, seatComfort, cabinStaffService, foodBeverages,
+                    inflightEntertainment, groundService, wifiConnectivity, valueForMoney
+                FROM reviews
+                WHERE LOWER(airlineName) = LOWER(%s)
+                AND score IS NOT NULL
+                AND (seatComfort IS NOT NULL OR cabinStaffService IS NOT NULL 
+                    OR foodBeverages IS NOT NULL OR inflightEntertainment IS NOT NULL
+                    OR groundService IS NOT NULL OR wifiConnectivity IS NOT NULL
+                    OR valueForMoney IS NOT NULL);
+                """,
+                (airline_name,)
+            )
+            results = self.cur.fetchall()
+            return [
+                {
+                    'score': row[0],
+                    'seatComfort': row[1],
+                    'cabinStaffService': row[2],
+                    'foodBeverages': row[3],
+                    'inflightEntertainment': row[4],
+                    'groundService': row[5],
+                    'wifiConnectivity': row[6],
+                    'valueForMoney': row[7]
+                }
+                for row in results
+            ]
+        except Exception as e:
+            print(f"Error getting reviews for regression: {e}")
+            return []
+        
     def close(self):
         if self.conn:
             self.cur.close()

@@ -6,7 +6,7 @@ const makeRequest = axios.create({
     baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
 });
 
-const useFetch = (url) => {
+const useFetch = (url, method = 'GET', body = null) => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -19,17 +19,21 @@ const useFetch = (url) => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const res = await makeRequest.get(url);
+                
+                const res = await (method === 'GET' 
+                    ? makeRequest.get(url) 
+                    : makeRequest.post(url, body));
+
                 setData(res.data.data);
             } catch (err) {
-                toast.error(err.message)
+                toast.error(err.message);
             } finally {
                 setLoading(false);
             }
         };
 
         fetchData();
-    }, [url]);
+    }, [url, body]);
 
     return { data, loading }
 }
