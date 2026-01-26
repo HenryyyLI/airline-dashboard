@@ -18,7 +18,7 @@ A full-stack analytics platform that scrapes, analyzes, and visualizes airline r
 
 - **🤖 Transformer-Based Sentiment Analysis**
 
-  Deploys pre-trained RoBERTa (124M parameters) with PyTorch backend for sentiment classification. LIME explainer generates token-level attribution scores, enabling interpretable ML predictions. Scikit-learn models quantify feature importance across service dimensions.
+  Deploys pre-trained RoBERTa with PyTorch backend for sentiment classification. LIME explainer generates token-level attribution scores, enabling interpretable ML predictions. Scikit-learn models quantify feature importance across service dimensions.
 
 - **🎨 Modern UI Components & Styling**
 
@@ -71,21 +71,17 @@ airline-dashboard/
 
 ## 🛠️ Tech Stack
 
-- **Backend API**: `FastAPI`, `Python 3.8+`, `uvicorn`
+- **Backend**: `FastAPI`, `Python`, `uvicorn`, `PostgreSQL`, `psycopg`
 
-- **Database**: `PostgreSQL`, `psycopg`
-
-- **Machine Learning**: `transformers`, `torch`, `LIME`, `scikit-learn`, `nltk`
+- **Machine Learning**: `transformers`, `PyTorch`, `LIME`, `scikit-learn`, `nltk`
 
 - **Web Scraping**: `Scrapy`, `PyQuery`
 
-- **Frontend**: `React 18`, `React Router`, `Vite`
+- **Frontend**: `React 18`, `React Router`, `Vite`, `Axios`
 
 - **UI & Styling**: `Tailwind CSS`, `ShadcnUI`, `react-hot-toast`, `framer-motion`
 
 - **State Management**: `Zustand`
-
-- **API Communication**: `Axios`
 
 - **Data Processing**: `numpy`, world cities dataset
 
