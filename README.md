@@ -73,7 +73,7 @@ airline-dashboard/
 
 - **Backend**: `FastAPI`, `Python`, `uvicorn`, `PostgreSQL`, `psycopg`
 
-- **Machine Learning**: `transformers`, `PyTorch`, `LIME`, `scikit-learn`, `nltk`
+- **Machine Learning**: `twitter-roberta-base-sentiment`, `PyTorch`, `LIME`, `scikit-learn`, `nltk`
 
 - **Web Scraping**: `Scrapy`, `PyQuery`
 
