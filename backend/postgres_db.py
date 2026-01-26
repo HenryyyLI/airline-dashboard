@@ -146,14 +146,12 @@ class PostgresClient:
             self.cur.execute(
                 """
                 SELECT 
-                    PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY score) as median_score
-                FROM reviews
-                WHERE LOWER(airlineName) = LOWER(%s) AND score IS NOT NULL;
-                """,
-                (airline_name,)
+                    PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY calculatedReviewCount) as median_count
+                FROM airlines;
+                """
             )
             median_row = self.cur.fetchone()
-            median_score = int(median_row[0]) if median_row and median_row[0] else 0
+            median_count = int(median_row[0]) if median_row and median_row[0] else 0
             
             self.cur.execute(
                 """
@@ -161,8 +159,8 @@ class PostgresClient:
                     COUNT(*) + 1 as rank,
                     (SELECT COUNT(*) FROM airlines) as total_airlines
                 FROM airlines
-                WHERE calculatedReviewCount > (
-                    SELECT calculatedReviewCount 
+                WHERE score > (
+                    SELECT score 
                     FROM airlines 
                     WHERE LOWER(name) = LOWER(%s)
                 );
@@ -210,7 +208,7 @@ class PostgresClient:
                 "top_rated_item": top_rated_item,
                 "total_rated_users": {
                     "count": airline_row[8],
-                    "medium_number": median_score
+                    "medium_number": median_count
                 },
                 "overall_score": {
                     "score": f"{round(airline_row[7], 1)} / 10" if airline_row[7] else "N/A",
